@@ -1,12 +1,8 @@
 package com.manhdaovan.boundfacebooktime;
 
-import android.app.Activity;
 import android.content.Intent;
-import android.graphics.Color;
-import android.net.Uri;
 import android.os.Bundle;
 import android.os.CountDownTimer;
-import android.support.customtabs.CustomTabsIntent;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.util.Log;
@@ -19,9 +15,9 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.webkit.WebView;
-import android.webkit.WebViewClient;
 import android.widget.Toast;
+
+import com.manhdaovan.boundfacebooktime.utils.Constants;
 
 public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
@@ -29,6 +25,7 @@ public class MainActivity extends AppCompatActivity
     private CountDownTimer countDownTimer;
     private long remainTime;
     private Intent intent;
+    private int backBtnPressCounter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -55,23 +52,36 @@ public class MainActivity extends AppCompatActivity
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
         remainTime = 30 * 1000;
-        intent = new Intent(this, OpeningWebpage.class);
+        intent = new Intent(this, OpeningWebPageActivity.class);
+        backBtnPressCounter = 0;
     }
 
     @Override
     protected void onResume() {
         super.onResume();
+        resetBackBtnCounter();
 //        settingCountDownTimer();
     }
 
     @Override
     public void onBackPressed() {
+        backBtnPressCounter += 1;
+
+        if (backBtnPressCounter == 1){
+            Toast.makeText(this, "Press back button "+ (Constants.MAX_BACK_BTN_PRESS_TO_EXIT - 1) +" times again to exit app", Toast.LENGTH_SHORT).show();
+        }
+
+        if (backBtnPressCounter == Constants.MAX_BACK_BTN_PRESS_TO_EXIT){
+            finish();
+        }
+
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         if (drawer.isDrawerOpen(GravityCompat.START)) {
             drawer.closeDrawer(GravityCompat.START);
-        } else {
-            super.onBackPressed();
         }
+//        else {
+//            super.onBackPressed();
+//        }
     }
 
     @Override
@@ -90,6 +100,7 @@ public class MainActivity extends AppCompatActivity
 
         //noinspection SimplifiableIfStatement
         if (id == R.id.action_settings) {
+            startActivity(new Intent(this, AppSettingsActivity.class));
             return true;
         }
 
@@ -122,7 +133,7 @@ public class MainActivity extends AppCompatActivity
         drawer.closeDrawer(GravityCompat.START);
 
         if(url != null){
-            intent.putExtra("URL", url);
+            intent.putExtra(Constants.INTENT_URL, url);
             startActivity(intent);
         }
 
@@ -150,5 +161,9 @@ public class MainActivity extends AppCompatActivity
         };
 
         countDownTimer.start();
+    }
+
+    private void resetBackBtnCounter(){
+        backBtnPressCounter = 0;
     }
 }
