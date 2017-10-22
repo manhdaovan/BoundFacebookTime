@@ -1,8 +1,15 @@
 package com.manhdaovan.boundfacebooktime;
 
+import android.app.Activity;
+import android.content.Intent;
+import android.graphics.Color;
+import android.net.Uri;
 import android.os.Bundle;
+import android.os.CountDownTimer;
+import android.support.customtabs.CustomTabsIntent;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
+import android.util.Log;
 import android.view.View;
 import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
@@ -14,11 +21,15 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
+import android.widget.Toast;
 
 public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
 
-    private static WebView webView;
+    private CountDownTimer countDownTimer;
+    private long remainTime;
+    private Intent intent;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -43,11 +54,14 @@ public class MainActivity extends AppCompatActivity
 
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
+        remainTime = 30 * 1000;
+        intent = new Intent(this, OpeningWebpage.class);
+    }
 
-        webView = (WebView) findViewById(R.id.webView);
-        WebViewClient webViewClient = new WebViewClient();
-        webView.setWebViewClient(webViewClient);
-        webView.loadUrl("https://facebook.com");
+    @Override
+    protected void onResume() {
+        super.onResume();
+//        settingCountDownTimer();
     }
 
     @Override
@@ -85,25 +99,56 @@ public class MainActivity extends AppCompatActivity
     @SuppressWarnings("StatementWithEmptyBody")
     @Override
     public boolean onNavigationItemSelected(MenuItem item) {
+        String url = null;
+
         // Handle navigation view item clicks here.
         int id = item.getItemId();
 
         if (id == R.id.nav_camera) {
-            // Handle the camera action
+            url = "https://google.com";
         } else if (id == R.id.nav_gallery) {
-
+            url = "https://facebook.com";
         } else if (id == R.id.nav_slideshow) {
-
+            url = "https://twitter.com";
         } else if (id == R.id.nav_manage) {
-
+            url = "https://www.instagram.com";
         } else if (id == R.id.nav_share) {
-
+            url = "https://www.reddit.com/";
         } else if (id == R.id.nav_send) {
-
+            url = "https://news.ycombinator.com/";
         }
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         drawer.closeDrawer(GravityCompat.START);
+
+        if(url != null){
+            intent.putExtra("URL", url);
+            startActivity(intent);
+        }
+
         return true;
+    }
+
+    private void settingCountDownTimer(){
+        Log.e("MMM", "IM IN settingCountDownTimer: " + (countDownTimer == null) + "|" + remainTime);
+
+        if (countDownTimer != null){
+            countDownTimer.cancel();
+        }
+
+        countDownTimer = new CountDownTimer(remainTime, 1000) {
+            @Override
+            public void onTick(long l) {
+                Log.e("KKK", "At: " + l);
+                remainTime -= 1000;
+            }
+
+            @Override
+            public void onFinish() {
+                finish();
+            }
+        };
+
+        countDownTimer.start();
     }
 }
