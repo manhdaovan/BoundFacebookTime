@@ -17,6 +17,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.Toast;
 
+import com.manhdaovan.boundfacebooktime.models.SnsPage;
 import com.manhdaovan.boundfacebooktime.utils.Constants;
 
 public class MainActivity extends AppCompatActivity
@@ -24,7 +25,8 @@ public class MainActivity extends AppCompatActivity
 
     private CountDownTimer countDownTimer;
     private long remainTime;
-    private Intent intent;
+    private Intent openSnsPageIntent;
+    private Intent newSnsPageIntent;
     private int backBtnPressCounter;
 
     @Override
@@ -38,8 +40,7 @@ public class MainActivity extends AppCompatActivity
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
-                        .setAction("Action", null).show();
+                startActivity(newSnsPageIntent);
             }
         });
 
@@ -52,7 +53,8 @@ public class MainActivity extends AppCompatActivity
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
         remainTime = 30 * 1000;
-        intent = new Intent(this, OpeningWebPageActivity.class);
+        openSnsPageIntent = new Intent(this, OpeningWebPageActivity.class);
+        newSnsPageIntent = new Intent(this, NewSnsPageActivity.class);
         backBtnPressCounter = 0;
     }
 
@@ -130,8 +132,8 @@ public class MainActivity extends AppCompatActivity
         drawer.closeDrawer(GravityCompat.START);
 
         if(url != null){
-            intent.putExtra(Constants.INTENT_URL, url);
-            startActivity(intent);
+            openSnsPageIntent.putExtra(Constants.INTENT_URL, url);
+            startActivity(openSnsPageIntent);
         }
 
         return true;
