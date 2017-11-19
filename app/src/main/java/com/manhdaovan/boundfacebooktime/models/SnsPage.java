@@ -9,6 +9,14 @@ public class SnsPage {
     private int boundTime; // minutes
     private boolean confirmBeforeQuit;
 
+    public SnsPage(String _name, String _url, int _boundTime){
+        name = _name;
+        url = _url;
+        useAppTime = false;
+        boundTime = _boundTime;
+        confirmBeforeQuit = false;
+    }
+
     public SnsPage(String _name, String _url, boolean _confirmBeforeQuit, int _boundTime){
         name = _name;
         url = _url;
@@ -23,6 +31,26 @@ public class SnsPage {
         useAppTime = _useAppTime;
         boundTime = 0;
         confirmBeforeQuit = _confirmBeforeQuit;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public String getUrl() {
+        return url;
+    }
+
+    public boolean isUseAppTime() {
+        return useAppTime;
+    }
+
+    public int getBoundTime() {
+        return boundTime;
+    }
+
+    public boolean isConfirmBeforeQuit() {
+        return confirmBeforeQuit;
     }
 
     public String toJson(){
